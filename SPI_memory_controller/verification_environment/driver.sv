@@ -3,8 +3,7 @@ class driver extends uvm_driver #(transaction);
   
   virtual spi_i vif;
   transaction tr;
-  
-  
+
   function new(input string path = "drv", uvm_component parent = null);
     super.new(path,parent);
   endfunction
@@ -15,9 +14,8 @@ class driver extends uvm_driver #(transaction);
       
       if(!uvm_config_db#(virtual spi_i)::get(this,"","vif",vif))//uvm_test_top.env.agent.drv.aif
       `uvm_error("drv","Unable to access Interface");
+	 
   endfunction
-  
-  
   
   task reset_dut();
  
@@ -38,7 +36,6 @@ class driver extends uvm_driver #(transaction);
      
          seq_item_port.get_next_item(tr);
      
-     
                    if(tr.op ==  rstdut)
                           begin
                           vif.rst   <= 1'b1;
@@ -55,6 +52,7 @@ class driver extends uvm_driver #(transaction);
                           `uvm_info("DRV", $sformatf("mode : Write addr:%0d din:%0d", vif.addr, vif.din), UVM_NONE);
                           @(posedge vif.done);
                           end
+	   
                 else if(tr.op ==  readd)
                           begin
 					      vif.rst  <= 1'b0;
@@ -65,15 +63,14 @@ class driver extends uvm_driver #(transaction);
                             `uvm_info("DRV", $sformatf("mode : Read addr:%0d din:%0d", vif.addr, vif.din), UVM_NONE);
                           @(posedge vif.done);
                           end
+	   
        seq_item_port.item_done();
      
    end
   endtask
   
- 
   virtual task run_phase(uvm_phase phase);
     drive();
   endtask
  
-  
 endclass
